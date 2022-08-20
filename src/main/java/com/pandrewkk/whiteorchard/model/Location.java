@@ -27,4 +27,9 @@ public class Location {
 
     @Column(nullable = false)
     private double longitude;
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
