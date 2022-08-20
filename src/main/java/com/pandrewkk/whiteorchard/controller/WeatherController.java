@@ -2,10 +2,12 @@ package com.pandrewkk.whiteorchard.controller;
 
 import com.pandrewkk.whiteorchard.dto.LocationWeatherRecordDto;
 import com.pandrewkk.whiteorchard.mapper.WeatherRecordMapper;
-import com.pandrewkk.whiteorchard.service.WeatherService;
+import com.pandrewkk.whiteorchard.service.weather.WeatherService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,17 +21,9 @@ public class WeatherController {
     private final WeatherRecordMapper weatherRecordMapper;
 
     @GetMapping("/history")
-    public List<LocationWeatherRecordDto> getWeatherHistoryByLocation(
-            @RequestParam("locationName") String locationName
-    ) {
-        return weatherService.getWeatherHistoryByLocation(locationName).stream()
+    public List<LocationWeatherRecordDto> getWeatherHistoryByLocation(@RequestParam("location") String location) {
+        return weatherService.getWeatherHistoryByLocation(location).stream()
                 .map(weatherRecordMapper::toLocationWeatherRecordDto)
                 .collect(Collectors.toList());
-    }
-
-    @PostMapping("/key")
-    public ResponseEntity<String> updateYandexApiKey(@RequestBody String key) {
-        weatherService.updateYandexApiKey(key);
-        return ResponseEntity.ok("Api key has been changed");
     }
 }

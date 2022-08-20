@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    username:
+    password:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/white-orchard
+  jpa:
+    hibernate:
+      ddl-auto: validate
+weather:
+  rateMinutes: 15
+yandex:
+  url: https://api.weather.yandex.ru/v2
+telegram:
+  url: https://api.telegram.org
+  token: 5796758875:AAFzrBfIAe-ueMbsfOuaaCfUSUcAuxt8kFw
+  chatId: -726201824
