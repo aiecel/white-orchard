@@ -11,7 +11,7 @@ public class WeatherRecordMapper {
         LocationWeatherRecordDto dto = new LocationWeatherRecordDto();
         dto.setDateTime(entity.getDateTime());
         dto.setTemperature(entity.getTemperature());
-        dto.setCondition(entity.getCondition());
+        dto.setCondition(entity.getCondition().name());
         dto.setCloudness(entity.getCloudness());
         dto.setThunder(entity.isThunder());
         dto.setWindSpeed(entity.getWindSpeed());

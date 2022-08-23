@@ -29,7 +29,8 @@ public class WeatherRecord {
 
     private double temperature;
 
-    private String condition;
+    @Enumerated(EnumType.STRING)
+    private Condition condition;
 
     private double cloudness;
 
@@ -44,4 +45,8 @@ public class WeatherRecord {
     private double humidity;
 
     private String daytime;
+
+    public boolean isExtreme() {
+        return condition.isExtreme() || windSpeed >= WindScale.HIGH_WIND.getWindSpeed();
+    }
 }

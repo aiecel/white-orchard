@@ -1,7 +1,7 @@
 package com.pandrewkk.whiteorchard.service.analysis;
 
 import com.pandrewkk.whiteorchard.model.WeatherRecord;
-import com.pandrewkk.whiteorchard.service.weather.WeatherService;
+import com.pandrewkk.whiteorchard.repository.WeatherRecordRepository;
 import com.pandrewkk.whiteorchard.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +9,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -19,14 +22,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DailyWeatherStatisticsService {
 
-    private final WeatherService weatherService;
+    private final WeatherRecordRepository weatherRecordRepository;
     private final NotificationService notificationService;
 
     @Scheduled(cron = "0 00 22 * * *")
     public void analyseDailyWeather() {
         log.info("Starting to analyze daily weather");
 
-        final List<WeatherRecord> todayWeatherRecords = weatherService.getWeatherRecordsForDate(LocalDate.now());
+        final List<WeatherRecord> todayWeatherRecords = getTodayWeatherRecords();
 
         if (todayWeatherRecords.size() == 0) {
             notificationService.sendNotification("За сегодня нет записей о погоде :()");
@@ -44,8 +47,7 @@ public class DailyWeatherStatisticsService {
                 .average().orElse(0);
 
         final Set<String> rainLocations = todayWeatherRecords.stream()
-                .filter(weather -> weather.getCondition().equalsIgnoreCase("rain")
-                        || weather.getCondition().equalsIgnoreCase("thunder"))
+                .filter(weather -> !weather.getCondition().isGood())
                 .map(rainWeather -> rainWeather.getLocation().getName())
                 .collect(Collectors.toSet());
 
@@ -85,5 +87,12 @@ public class DailyWeatherStatisticsService {
         }
 
         return text.toString();
+    }
+
+    private List<WeatherRecord> getTodayWeatherRecords() {
+        return weatherRecordRepository.getAllByDateTimeBetween(
+                ZonedDateTime.of(LocalDate.now(), LocalTime.MIN, ZoneId.systemDefault()),
+                ZonedDateTime.of(LocalDate.now(), LocalTime.MAX, ZoneId.systemDefault())
+        );
     }
 }
