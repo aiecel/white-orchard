@@ -12,4 +12,6 @@ public interface WeatherRecordRepository extends JpaRepository<WeatherRecord, Lo
     List<WeatherRecord> findAllByLocationOrderByDateTimeDesc(Location location);
 
     List<WeatherRecord> getAllByDateTimeBetween(ZonedDateTime from, ZonedDateTime to);
+
+    List<WeatherRecord> getAllByLocationAndDateTimeBetween(Location location, ZonedDateTime from, ZonedDateTime to);
 }
